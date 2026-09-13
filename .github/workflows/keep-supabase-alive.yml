@@ -9,12 +9,7 @@ on:
 jobs:
   ping:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Ping Supabase REST API
         run: |
           echo "Pinging Supabase REST API..."
@@ -23,6 +18,4 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" > /dev/null
           echo "Successfully pinged Supabase API!"
 
-      - name: Keepalive Workflow (Prevents GH Actions 60-day auto-disable)
-        uses: gautamkrishnar/keepalive-workflow@v2
 
