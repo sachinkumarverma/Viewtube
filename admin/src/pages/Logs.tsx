@@ -168,11 +168,11 @@ export default function Logs() {
                                 </div>
                                 <div className="input-group">
                                     <label className="input-label">Date From</label>
-                                    <input className="input" type="date" value={filters.from} max={filters.to || undefined} onChange={e => setFilters(p => ({ ...p, from: e.target.value }))} />
+                                    <input className="input" type="date" value={filters.from} max={filters.to || undefined} onClick={e => { try { e.currentTarget.showPicker(); } catch (err) {} }} onChange={e => setFilters(p => ({ ...p, from: e.target.value }))} />
                                 </div>
                                 <div className="input-group">
                                     <label className="input-label">Date To</label>
-                                    <input className="input" type="date" value={filters.to} min={filters.from || undefined} onChange={e => setFilters(p => ({ ...p, to: e.target.value }))} />
+                                    <input className="input" type="date" value={filters.to} min={filters.from || undefined} onClick={e => { try { e.currentTarget.showPicker(); } catch (err) {} }} onChange={e => setFilters(p => ({ ...p, to: e.target.value }))} />
                                 </div>
                                 <div style={{ display: 'flex', gap: '8px', alignSelf: 'flex-end', marginLeft: 'auto' }}>
                                     <button className="btn btn-primary" onClick={() => fetchLogs(1)}>
@@ -214,7 +214,7 @@ export default function Logs() {
                                 </thead>
                                 <tbody>
                                     {logs.map(l => (
-                                        <tr key={l.id} className="admin-table-row">
+                                        <tr key={l.id} className="admin-table-row" onClick={() => setSelectedLog(l)} style={{ cursor: 'pointer' }}>
                                             <td>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                     {l.action === 'SYSTEM_ERROR' ? <AlertCircle size={14} color="var(--danger)" /> : <Terminal size={14} color="var(--text-secondary)" />}
@@ -244,7 +244,7 @@ export default function Logs() {
                                                 {formatDateIST(l.created_at)}
                                             </td>
                                             <td style={{ textAlign: 'right' }}>
-                                                <button className="btn btn-sm btn-ghost" onClick={() => setSelectedLog(l)}>
+                                                <button className="btn btn-sm btn-ghost" onClick={(e) => { e.stopPropagation(); setSelectedLog(l); }}>
                                                     <ChevronRight size={16} />
                                                 </button>
                                             </td>
@@ -260,7 +260,7 @@ export default function Logs() {
                                 <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Logs per page:</span>
                                 <select
                                     className="input"
-                                    style={{ padding: '4px 8px', fontSize: '13px', minWidth: '70px', height: '32px' }}
+                                    style={{ padding: '4px 28px 4px 10px', fontSize: '13px', minWidth: '70px', height: '32px' }}
                                     value={limit}
                                     onChange={e => {
                                         const newLimit = parseInt(e.target.value);

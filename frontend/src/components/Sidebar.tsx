@@ -27,42 +27,42 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
         <span className="sidebar-text">{t('subscriptions')}</span>
       </Link>
 
-      <div style={{ height: '1px', background: 'var(--border)', margin: '12px 0' }}></div>
+      <div style={{ height: '1px', background: 'var(--border)', margin: '6px 0' }}></div>
 
       <Link to="/history" className={`sidebar-link ${isActive('/history') ? 'active' : ''}`} onClick={handleLinkClick}>
-        <History size={22} />
+        <History size={20} />
         <span className="sidebar-text">{t('history')}</span>
       </Link>
       <Link to="/watch-later" className={`sidebar-link ${isActive('/watch-later') ? 'active' : ''}`} onClick={handleLinkClick}>
-        <Clock size={22} />
+        <Clock size={20} />
         <span className="sidebar-text">{t('watchLater')}</span>
       </Link>
       <Link to="/liked" className={`sidebar-link ${isActive('/liked') ? 'active' : ''}`} onClick={handleLinkClick}>
-        <ThumbsUp size={22} />
+        <ThumbsUp size={20} />
         <span className="sidebar-text">{t('likedVideos')}</span>
       </Link>
 
-      <div style={{ height: '1px', background: 'var(--border)', margin: '12px 0' }}></div>
+      <div style={{ height: '1px', background: 'var(--border)', margin: '6px 0' }}></div>
 
-      <h3 style={{ color: 'var(--text-secondary)', fontSize: '14px', padding: '8px 16px', fontWeight: 600, letterSpacing: '0.4px', marginTop: '12px' }}>{t('explore').toUpperCase()}</h3>
+      <h3 style={{ color: 'var(--text-secondary)', fontSize: '12px', padding: '4px 12px', fontWeight: 600, letterSpacing: '0.4px', marginTop: '6px', marginBottom: '2px' }}>{t('explore').toUpperCase()}</h3>
       <Link to="/trending" className={`sidebar-link ${isActive('/trending') ? 'active' : ''}`} onClick={handleLinkClick}>
-        <Flame size={22} />
+        <Flame size={20} />
         <span className="sidebar-text">{t('trending')}</span>
       </Link>
       <Link to="/gaming" className={`sidebar-link ${isActive('/gaming') ? 'active' : ''}`} onClick={handleLinkClick}>
-        <Gamepad2 size={22} />
+        <Gamepad2 size={20} />
         <span className="sidebar-text">{t('gaming')}</span>
       </Link>
 
       {user.id && (
         <>
-          <div style={{ height: '1px', background: 'var(--border)', margin: '12px 0' }}></div>
+          <div style={{ height: '1px', background: 'var(--border)', margin: '6px 0' }}></div>
           <Link to={`/channel/${user.id}`} className={`sidebar-link ${isActive(`/channel/${user.id}`) ? 'active' : ''}`} onClick={handleLinkClick}>
-            <UserSquare size={22} />
+            <UserSquare size={20} />
             <span className="sidebar-text">{t('yourChannel')}</span>
           </Link>
           <Link to="/analytics" className={`sidebar-link ${isActive('/analytics') ? 'active' : ''}`} onClick={handleLinkClick}>
-            <BarChart3 size={22} />
+            <BarChart3 size={20} />
             <span className="sidebar-text">{t('analytics')}</span>
           </Link>
         </>

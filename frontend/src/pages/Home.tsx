@@ -77,7 +77,7 @@ const Home = () => {
 
   return (
     <div className="animate-fade-in">
-      <div className="categories" style={{ display: 'flex', gap: '12px', padding: '12px 24px', overflowX: 'auto' }}>
+      <div className="categories" style={{ display: 'flex', gap: '12px', padding: '0 0 16px 0', overflowX: 'auto' }}>
         {['All', 'Gaming', 'Music', 'Spiritual', 'Entertainment', 'Education', 'Vlogs'].map(cat => (
           <button
             key={cat}

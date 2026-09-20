@@ -47,13 +47,13 @@ export default function Login() {
                 {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </button>
             <div className="auth-card animate-in">
-                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                    <img src="/logo.png" alt="ViewTube Logo" style={{ width: '80px', height: 'auto', objectFit: 'contain' }} />
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
+                    <img src="/logo.png" alt="ViewTube Logo" style={{ width: '52px', height: 'auto', objectFit: 'contain' }} />
                 </div>
                 <h1>{isRegister ? 'Create Admin Account' : 'Admin Portal'}</h1>
-                <p>{isRegister ? 'Register with your admin secret key' : 'Sign in to manage your platform'}</p>
+                <p style={{ marginBottom: '18px' }}>{isRegister ? 'Register with your admin secret key' : 'Sign in to manage your platform'}</p>
 
-                {error && <div className="error-msg" style={{ marginBottom: '16px' }}>{error}</div>}
+                {error && <div className="error-msg" style={{ marginBottom: '12px' }}>{error}</div>}
 
                 <form className="auth-form" onSubmit={handleSubmit}>
                     {isRegister && (
@@ -86,15 +86,15 @@ export default function Login() {
                 </form>
 
                 {!isRegister && (
-                    <div style={{ textAlign: 'right', marginTop: '12px' }}>
+                    <div style={{ textAlign: 'right', marginTop: '10px' }}>
                         <a href="/forgot-password" style={{ color: 'var(--accent)', textDecoration: 'none', fontSize: '13px', fontWeight: 600 }}>Forgot Password?</a>
                     </div>
                 )}
 
-                <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <div style={{ textAlign: 'center', marginTop: '14px' }}>
                     <button
                         onClick={() => { setIsRegister(!isRegister); setError(''); }}
-                        style={{ background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer', fontSize: '14px', fontFamily: 'var(--font-main)', fontWeight: 600 }}
+                        style={{ background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer', fontSize: '13.5px', fontFamily: 'var(--font-main)', fontWeight: 600 }}
                     >
                         {isRegister ? 'Already have an account? Sign In' : 'Need an account? Register'}
                     </button>

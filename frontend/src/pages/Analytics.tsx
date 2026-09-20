@@ -128,8 +128,8 @@ export default function Analytics() {
 
     return (
         <div className="analytics-page animate-fade-in">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
-                <h1 style={{ fontSize: '24px', fontWeight: 800 }}>{t('analytics')}</h1>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '16px' }}>
+                <h1 style={{ fontSize: '20px', fontWeight: 700 }}>{t('analytics')}</h1>
                 <div style={{ display: 'flex', gap: '8px' }}>
                     {periodOptions.map(p => (
                         <button key={p.key} className={`category-pill ${period === p.key ? 'active' : ''}`} onClick={() => setPeriod(p.key)}>

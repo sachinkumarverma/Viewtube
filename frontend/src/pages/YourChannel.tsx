@@ -106,11 +106,11 @@ export default function YourChannel() {
     };
 
     return (
-        <div style={{ padding: '24px', color: 'var(--text-primary)', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <div style={{ padding: '0 0 24px 0', color: 'var(--text-primary)', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 {loading
                     ? <Skeleton width="220px" height="30px" />
-                    : <h1 style={{ fontSize: '24px' }}>{t('yourChannel')}</h1>
+                    : <h1 style={{ fontSize: '20px', fontWeight: '700' }}>{t('yourChannel')}</h1>
                 }
             </div>
             <div className="video-grid">

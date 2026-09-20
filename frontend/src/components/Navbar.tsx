@@ -1,10 +1,42 @@
-import { Search, Bell, Video, User, Menu, Mic, Sun, Moon, X, Languages, LogOut, Trash2 } from 'lucide-react';
+import { Search, Bell, Video, User, Menu, Mic, Sun, Moon, X, Languages, LogOut, Trash2, CheckCheck, BellOff, ShieldAlert, CheckCircle2, Heart, MessageSquare, Check } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from '../i18n';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../constants';
 import { useToast } from './Toast';
+
+// Helper for relative timestamps
+const formatRelativeTime = (dateString: string) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  if (isNaN(diffInSeconds)) return dateString;
+  if (diffInSeconds < 60) return 'Just now';
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
+  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+};
+
+// Helper for notification categories and icons
+const getNotificationMetadata = (title: string) => {
+  const lowerTitle = (title || '').toLowerCase();
+  if (lowerTitle.includes('removed') || lowerTitle.includes('policy') || lowerTitle.includes('delete') || lowerTitle.includes('banned')) {
+    return { IconComponent: ShieldAlert, variant: 'danger' };
+  }
+  if (lowerTitle.includes('report') || lowerTitle.includes('reviewed') || lowerTitle.includes('update')) {
+    return { IconComponent: CheckCircle2, variant: 'warning' };
+  }
+  if (lowerTitle.includes('like')) {
+    return { IconComponent: Heart, variant: 'danger' };
+  }
+  if (lowerTitle.includes('comment') || lowerTitle.includes('reply')) {
+    return { IconComponent: MessageSquare, variant: 'info' };
+  }
+  return { IconComponent: Video, variant: 'info' };
+};
 
 // Declare SpeechRecognition types for TypeScript
 interface SpeechRecognitionEvent {
@@ -33,6 +65,7 @@ const Navbar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
+  const [notificationFilter, setNotificationFilter] = useState<'all' | 'unread'>('all');
   const [user, setUser] = useState<any>(null);
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -134,6 +167,18 @@ const Navbar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNotifications(notifications.map(n => n.id === id ? { ...n, is_read: true } : n));
+    } catch (err) { console.error(err); }
+  };
+
+  const markAllAsRead = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      await axios.put(`${API_BASE_URL}/notifications/read-all`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setNotifications(notifications.map(n => ({ ...n, is_read: true })));
+      showToast('All notifications marked as read', 'success');
     } catch (err) { console.error(err); }
   };
 
@@ -310,76 +355,145 @@ const Navbar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
           )}
 
           <div style={{ position: 'relative' }} ref={notificationDropdownRef}>
-            <button className="icon-btn" onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}>
+            <button className="icon-btn" onClick={() => setShowNotificationDropdown(!showNotificationDropdown)} title="Notifications">
               <Bell size={24} />
               {unreadCount > 0 && (
-                <span style={{ position: 'absolute', top: '4px', right: '4px', background: '#cc0000', color: 'white', borderRadius: '50%', width: '18px', height: '18px', fontSize: '11px', display: 'grid', placeItems: 'center', fontWeight: 'bold' }}>
-                  {unreadCount}
+                <span style={{ position: 'absolute', top: '4px', right: '4px', background: '#3ea6ff', color: '#000', borderRadius: '50%', width: '18px', height: '18px', fontSize: '11px', display: 'grid', placeItems: 'center', fontWeight: '800' }}>
+                  {unreadCount > 99 ? '99+' : unreadCount}
                 </span>
               )}
             </button>
             {showNotificationDropdown && (
               <div
-                className="user-dropdown"
+                className="notification-dropdown"
                 style={isMobile ? {
                   position: 'fixed',
                   top: '60px',
                   left: '12px',
                   right: '12px',
                   width: 'calc(100vw - 24px)',
-                  maxWidth: '360px',
+                  maxWidth: '400px',
                   maxHeight: '480px',
-                  overflowY: 'auto',
                   margin: '0 auto',
                   zIndex: 1000,
                   transform: 'none',
-                } : {
-                  right: 0,
-                  width: '360px',
-                  maxHeight: '480px',
-                  overflowY: 'auto',
-                }}
+                } : {}}
               >
-                <div style={{ padding: '16px', borderBottom: '1px solid var(--border)', fontWeight: 'bold', fontSize: '16px' }}>
-                  {t('notifications')}
-                </div>
-                {notifications.length === 0 ? (
-                  <div style={{ padding: '32px', textAlign: 'center', color: 'var(--text-secondary)' }}>{t('noNotifications' as any)}</div>
-                ) : (
-                  notifications.map(n => (
-                    <div
-                      key={n.id}
-                      onClick={() => { markAsRead(n.id); if (n.video_id) navigate(`/video/${n.video_id}`); }}
-                      style={{
-                        padding: '12px 16px', borderBottom: '1px solid var(--border)', cursor: 'pointer',
-                        background: n.is_read ? 'transparent' : 'rgba(62, 166, 255, 0.05)',
-                        display: 'flex', gap: '12px', position: 'relative'
-                      }}
-                      className="notification-item"
+                {/* Header */}
+                <div className="notification-header">
+                  <div className="notification-header-title">
+                    <span>{t('notifications')}</span>
+                  </div>
+                  {unreadCount > 0 && (
+                    <button
+                      className="notification-mark-all-btn"
+                      onClick={markAllAsRead}
+                      title="Mark all as read"
                     >
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: n.is_read ? 'normal' : 'bold', color: 'var(--text-primary)', fontSize: '14px' }}>{n.title}</div>
-                        <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '4px' }}>{n.content}</div>
-                        <div style={{ fontSize: '11px', color: 'rgba(62, 166, 255, 0.8)', marginTop: '4px' }}>{new Date(n.created_at).toLocaleDateString()}</div>
-                      </div>
-                      <button onClick={(e) => deleteNotification(n.id, e)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px' }}>
-                        <Trash2 size={16} />
-                      </button>
-                      {!n.is_read && <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3ea6ff', position: 'absolute', left: '4px', top: '24px' }}></div>}
-                    </div>
-                  ))
-                )}
+                      <CheckCheck size={16} />
+                      <span>Mark all read</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Filter Tabs */}
+                <div className="notification-tabs">
+                  <button
+                    className={`notification-tab-btn ${notificationFilter === 'all' ? 'active' : ''}`}
+                    onClick={() => setNotificationFilter('all')}
+                  >
+                    All ({notifications.length})
+                  </button>
+                  <button
+                    className={`notification-tab-btn ${notificationFilter === 'unread' ? 'active' : ''}`}
+                    onClick={() => setNotificationFilter('unread')}
+                  >
+                    Unread ({unreadCount})
+                  </button>
+                </div>
+
+                {/* Notification Items List */}
+                <div className="notification-list">
+                  {(() => {
+                    const filtered = notifications.filter(n => notificationFilter === 'all' || !n.is_read);
+                    if (filtered.length === 0) {
+                      return (
+                        <div className="notification-empty">
+                          <div className="notification-empty-icon">
+                            <BellOff size={26} />
+                          </div>
+                          <div style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text-primary)' }}>
+                            {notificationFilter === 'unread' ? 'No unread notifications' : 'No notifications yet'}
+                          </div>
+                          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', maxWidth: '240px' }}>
+                            {notificationFilter === 'unread' ? 'You are all caught up!' : 'When you receive alerts or updates, they will appear here.'}
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    return filtered.map(n => {
+                      const { IconComponent, variant } = getNotificationMetadata(n.title);
+                      return (
+                        <div
+                          key={n.id}
+                          onClick={() => {
+                            if (!n.is_read) markAsRead(n.id);
+                            if (n.video_id) navigate(`/video/${n.video_id}`);
+                          }}
+                          className={`notification-item ${!n.is_read ? 'unread' : ''}`}
+                        >
+                          {/* Categorized Icon Wrapper with Unread Dot */}
+                          <div className={`notification-icon-wrapper ${variant}`}>
+                            <IconComponent size={18} />
+                            {!n.is_read && <div className="notification-unread-dot" />}
+                          </div>
+
+                          {/* Body text */}
+                          <div className="notification-body">
+                            <div className="notification-item-title">{n.title}</div>
+                            <div className="notification-item-content">{n.content}</div>
+                            <div className="notification-item-time">{formatRelativeTime(n.created_at)}</div>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="notification-actions">
+                            {!n.is_read && (
+                              <button
+                                className="notification-action-btn"
+                                title="Mark as read"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  markAsRead(n.id);
+                                }}
+                              >
+                                <Check size={15} />
+                              </button>
+                            )}
+                            <button
+                              className="notification-action-btn delete"
+                              title="Delete notification"
+                              onClick={(e) => deleteNotification(n.id, e)}
+                            >
+                              <Trash2 size={15} />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    });
+                  })()}
+                </div>
               </div>
             )}
           </div>
 
           {isLoggedIn ? (
             <div style={{ position: 'relative' }} ref={userDropdownRef}>
-              <button className="icon-btn" onClick={() => setShowUserDropdown(!showUserDropdown)} title="Account" style={{ background: 'var(--bg-hover)', borderRadius: '50%', padding: user?.avatar_url ? '0' : '8px', overflow: 'hidden', width: '40px', height: '40px' }}>
+              <button className="icon-btn" onClick={() => setShowUserDropdown(!showUserDropdown)} title="Account" style={{ background: 'var(--bg-hover)', borderRadius: '50%', padding: user?.avatar_url ? '0' : '6px', overflow: 'hidden', width: '32px', height: '32px', flexShrink: 0 }}>
                 {user?.avatar_url ? (
                   <img src={user.avatar_url} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
-                  <User size={24} color="var(--text-primary)" />
+                  <User size={20} color="var(--text-primary)" />
                 )}
               </button>
               {showUserDropdown && (

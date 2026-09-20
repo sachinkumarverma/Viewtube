@@ -65,32 +65,36 @@ export default function VideoList({ endpoint, title }: { endpoint: string, title
     const translatedTitle = t(title.toLowerCase().replace(' ', '') as any) || title;
 
     return (
-        <div style={{ padding: '24px', color: 'var(--text-primary)', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
-            <h1 style={{ marginBottom: '24px', fontSize: '24px' }}>{translatedTitle}</h1>
-            <div className="video-grid">
-                {loading ? (
-                    Array.from({ length: 8 }).map((_, i) => <VideoSkeleton key={i} />)
-                ) : videos.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '100px 24px', color: 'var(--text-secondary)', gridColumn: '1 / -1' }}>
-                        <p style={{ fontSize: '20px', marginBottom: '8px' }}>{t('noVideos')}</p>
-                    </div>
-                ) : groupedVideos ? (
-                    Object.entries(groupedVideos).map(([date, items]) => (
-                        <div key={date} style={{ marginBottom: '40px', gridColumn: '1 / -1' }}>
-                            <h2 style={{ fontSize: '18px', marginBottom: '16px', borderBottom: '1px solid var(--border)', paddingBottom: '8px' }}>{date}</h2>
+        <div style={{ padding: '0 0 24px 0', color: 'var(--text-primary)', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
+            <h1 style={{ marginBottom: '14px', fontSize: '20px', fontWeight: '700' }}>{translatedTitle}</h1>
+            {loading ? (
+                <div className="video-grid">
+                    {Array.from({ length: 8 }).map((_, i) => <VideoSkeleton key={i} />)}
+                </div>
+            ) : videos.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '100px 24px', color: 'var(--text-secondary)' }}>
+                    <p style={{ fontSize: '20px', marginBottom: '8px' }}>{t('noVideos')}</p>
+                </div>
+            ) : groupedVideos ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {Object.entries(groupedVideos).map(([date, items]) => (
+                        <div key={date}>
+                            <h2 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '8px', borderBottom: '1px solid var(--border)', paddingBottom: '6px' }}>{date}</h2>
                             <div className="video-grid">
                                 {items.map(video => (
                                     <VideoCard key={video.id} video={video} />
                                 ))}
                             </div>
                         </div>
-                    ))
-                ) : (
-                    videos.map(video => (
+                    ))}
+                </div>
+            ) : (
+                <div className="video-grid">
+                    {videos.map(video => (
                         <VideoCard key={video.id} video={video} />
-                    ))
-                )}
-            </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

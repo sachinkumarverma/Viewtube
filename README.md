@@ -32,6 +32,7 @@ A high-performance, full-stack video sharing platform built with modern web tech
 
 ### 🎨 Modern UI & UX
 - **Glassmorphism Design**: Sleek, modern interface using custom CSS tokens and high-quality animations.
+- **Redesigned Notification Center**: Interactive glassmorphic dropdown modal with unread counters, category badges, relative time formatting, filter tabs (All/Unread), and bulk "Mark all as read" actions.
 - **Premium Toast Notifications**: Custom notification system for consistent user feedback.
 - **Internationalization**: Full support for multiple languages and RTL/LTR layouts.
 - **Responsive Layouts**: Optimized for Desktop, Tablet, and Mobile devices.
@@ -80,33 +81,41 @@ BREVO_SENDER_EMAIL="your-email@gmail.com"
 
 > **Note**: Sign up at [brevo.com](https://www.brevo.com), go to **SMTP & API** > **API Keys** and create one. Set `BREVO_SENDER_EMAIL` to the email you signed up with. Free tier: 300 emails/day, no custom domain needed.
 
-### 2. Database Initialization
+### 2. Quick Setup (Root Directory)
+Install dependencies across all projects (Root, Backend, Frontend, Admin) with a single command:
+
+```bash
+npm run setup
+```
+
+### 3. Database Migration
 ```bash
 cd backend
-npm install
 node migrate.js
 ```
 
-### 3. Launching the Platform
+### 4. Launching the Platform
 
-**API Server**
+**🚀 Run All Services Concurrently (Root Directory)**
+Run backend, main frontend app, and admin portal together with color-coded logs:
+
 ```bash
-cd backend
 npm run dev
 ```
 
-**Main Frontend**
+**⚡ Run Individual Services from Root**
 ```bash
-cd frontend
-npm install
-npm run dev
-```
+# Run Main Frontend App (Port 5173)
+npm run frontend   # or npm run dev:frontend
 
-**Admin Dashboard**
-```bash
-cd admin
-npm install
-npm run dev
+# Run API Backend (Port 5000)
+npm run backend    # or npm run dev:backend
+
+# Run Admin Portal (Port 5174)
+npm run admin      # or npm run dev:admin
+
+# Build all production bundles
+npm run build
 ```
 
 ---
