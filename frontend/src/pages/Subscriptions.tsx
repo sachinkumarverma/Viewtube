@@ -5,8 +5,10 @@ import { Link } from 'react-router-dom';
 import { Bell, BellOff, CheckCircle2 } from 'lucide-react';
 import { useTranslation } from '../i18n';
 import ChannelSkeleton from '../components/ChannelSkeleton';
+import { useDocumentTitle } from '../utils/useDocumentTitle';
 
 export default function Subscriptions() {
+    useDocumentTitle('Subscriptions');
     const [subscriptions, setSubscriptions] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const { t } = useTranslation();

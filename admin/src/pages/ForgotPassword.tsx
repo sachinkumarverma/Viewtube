@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import { Mail, ArrowLeft, KeyRound, Lock, Sun, Moon } from 'lucide-react';
+import { Mail, ArrowLeft, KeyRound, Lock, Sun, Moon, Eye, EyeOff } from 'lucide-react';
 import { API_BASE_URL } from '../constants';
 
 type Step = 'email' | 'otp' | 'reset';
@@ -19,6 +19,8 @@ export default function ForgotPassword() {
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
@@ -195,16 +197,32 @@ export default function ForgotPassword() {
                     <form className="auth-form" onSubmit={handleResetPassword}>
                         <div className="input-group">
                             <label className="input-label">New Password</label>
-                            <div style={{ position: 'relative' }}>
-                                <Lock size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-                                <input className="input" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" required minLength={6} style={{ paddingLeft: '38px' }} />
+                            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                <Lock size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', pointerEvents: 'none' }} />
+                                <input className="input" type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" required minLength={6} style={{ paddingLeft: '38px', paddingRight: '38px', width: '100%', boxSizing: 'border-box' }} />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                    style={{ position: 'absolute', right: '10px', background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                >
+                                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                </button>
                             </div>
                         </div>
                         <div className="input-group">
                             <label className="input-label">Confirm Password</label>
-                            <div style={{ position: 'relative' }}>
-                                <KeyRound size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-                                <input className="input" type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="••••••••" required minLength={6} style={{ paddingLeft: '38px' }} />
+                            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                <KeyRound size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', pointerEvents: 'none' }} />
+                                <input className="input" type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="••••••••" required minLength={6} style={{ paddingLeft: '38px', paddingRight: '38px', width: '100%', boxSizing: 'border-box' }} />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                                    style={{ position: 'absolute', right: '10px', background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                >
+                                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                </button>
                             </div>
                         </div>
                         <button className="auth-btn" type="submit" disabled={loading}>

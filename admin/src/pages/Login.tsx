@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { LogIn, Sun, Moon } from 'lucide-react';
+import { LogIn, Sun, Moon, Eye, EyeOff } from 'lucide-react';
 import { API_BASE_URL } from '../constants';
 
 const API = `${API_BASE_URL}/auth`;
@@ -15,8 +15,10 @@ export default function Login() {
     const [isRegister, setIsRegister] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [username, setUsername] = useState('');
     const [secretKey, setSecretKey] = useState('');
+    const [showSecretKey, setShowSecretKey] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -64,7 +66,17 @@ export default function Login() {
                             </div>
                             <div className="input-group">
                                 <label className="input-label">Admin Secret Key</label>
-                                <input className="input" type="password" value={secretKey} onChange={e => setSecretKey(e.target.value)} placeholder="••••••••" required />
+                                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                    <input className="input" type={showSecretKey ? 'text' : 'password'} value={secretKey} onChange={e => setSecretKey(e.target.value)} placeholder="••••••••" required style={{ width: '100%', paddingRight: '38px', boxSizing: 'border-box' }} />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowSecretKey(!showSecretKey)}
+                                        aria-label={showSecretKey ? 'Hide secret key' : 'Show secret key'}
+                                        style={{ position: 'absolute', right: '10px', background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                    >
+                                        {showSecretKey ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
+                                </div>
                             </div>
                         </>
                     )}
@@ -74,7 +86,17 @@ export default function Login() {
                     </div>
                     <div className="input-group">
                         <label className="input-label">Password</label>
-                        <input className="input" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" required />
+                        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                            <input className="input" type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" required style={{ width: '100%', paddingRight: '38px', boxSizing: 'border-box' }} />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                style={{ position: 'absolute', right: '10px', background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        </div>
                     </div>
                     <button className="auth-btn" type="submit" disabled={loading}>
                         {loading ? 'Please wait...' : (

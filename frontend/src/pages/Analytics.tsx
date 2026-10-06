@@ -6,6 +6,7 @@ import { Eye, Users, ThumbsUp, Video, TrendingUp, Play, Clock, MessageSquare, Pe
 import { API_BASE_URL } from '../constants';
 import { useTranslation } from '../i18n';
 import { formatDuration } from '../utils/format';
+import { useDocumentTitle } from '../utils/useDocumentTitle';
 
 type Period = '28d' | '90d' | '365d';
 
@@ -22,6 +23,7 @@ interface Overview {
 }
 
 export default function Analytics() {
+    useDocumentTitle('Analytics');
     const [period, setPeriod] = useState<Period>('28d');
     const [overview, setOverview] = useState<Overview | null>(null);
     const [subsData, setSubsData] = useState<any[]>([]);
@@ -32,12 +34,11 @@ export default function Analytics() {
     const [loading, setLoading] = useState(true);
     const { t } = useTranslation();
 
-    const token = localStorage.getItem('token');
-    if (!token) return <Navigate to="/login" replace />;
-
-    const headers = { Authorization: `Bearer ${token}` };
-
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        const headers = { Authorization: `Bearer ${token}` };
+
         const fetchOverview = async () => {
             try {
                 const [ovRes, topRes] = await Promise.all([
@@ -52,6 +53,10 @@ export default function Analytics() {
     }, []);
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        const headers = { Authorization: `Bearer ${token}` };
+
         const fetchCharts = async () => {
             setLoading(true);
             try {
@@ -70,6 +75,9 @@ export default function Analytics() {
         };
         fetchCharts();
     }, [period]);
+
+    const token = localStorage.getItem('token');
+    if (!token) return <Navigate to="/login" replace />;
 
     const formatDate = (date: string) => {
         const d = new Date(date);

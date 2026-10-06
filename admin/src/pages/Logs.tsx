@@ -168,11 +168,11 @@ export default function Logs() {
                                 </div>
                                 <div className="input-group">
                                     <label className="input-label">Date From</label>
-                                    <input className="input" type="date" value={filters.from} max={filters.to || undefined} onClick={e => { try { e.currentTarget.showPicker(); } catch (err) {} }} onChange={e => setFilters(p => ({ ...p, from: e.target.value }))} />
+                                    <input className="input" type="date" value={filters.from} max={filters.to || undefined} onClick={e => { try { e.currentTarget.showPicker(); } catch { /* ignore */ } }} onChange={e => setFilters(p => ({ ...p, from: e.target.value }))} />
                                 </div>
                                 <div className="input-group">
                                     <label className="input-label">Date To</label>
-                                    <input className="input" type="date" value={filters.to} min={filters.from || undefined} onClick={e => { try { e.currentTarget.showPicker(); } catch (err) {} }} onChange={e => setFilters(p => ({ ...p, to: e.target.value }))} />
+                                    <input className="input" type="date" value={filters.to} min={filters.from || undefined} onClick={e => { try { e.currentTarget.showPicker(); } catch { /* ignore */ } }} onChange={e => setFilters(p => ({ ...p, to: e.target.value }))} />
                                 </div>
                                 <div style={{ display: 'flex', gap: '8px', alignSelf: 'flex-end', marginLeft: 'auto' }}>
                                     <button className="btn btn-primary" onClick={() => fetchLogs(1)}>
@@ -280,7 +280,7 @@ export default function Logs() {
                                         const pages = [];
                                         const maxPagesToShow = 5;
                                         let startPage = Math.max(1, meta.page - Math.floor(maxPagesToShow / 2));
-                                        let endPage = Math.min(meta.totalPages, startPage + maxPagesToShow - 1);
+                                        const endPage = Math.min(meta.totalPages, startPage + maxPagesToShow - 1);
 
                                         if (endPage - startPage + 1 < maxPagesToShow) {
                                             startPage = Math.max(1, endPage - maxPagesToShow + 1);

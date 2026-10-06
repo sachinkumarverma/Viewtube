@@ -22,7 +22,6 @@ export default function Dashboard() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        setLoading(true);
         Promise.all([
             axios.get(`${API}/stats`),
             axios.get(`${API}/logs?limit=8`)

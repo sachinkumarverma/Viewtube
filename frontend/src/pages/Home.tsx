@@ -5,6 +5,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from '../i18n';
 import VideoSkeleton from '../components/VideoSkeleton';
 import VideoCard from '../components/VideoCard';
+import { useDocumentTitle } from '../utils/useDocumentTitle';
 
 interface Video {
   id: string;
@@ -36,7 +37,7 @@ const Home = () => {
 
       try {
         const res = await axios.get(`${API_BASE_URL}/videos`);
-        let fetchedVideos = res.data;
+        const fetchedVideos = res.data;
 
         const token = localStorage.getItem('token');
         if (token) {
@@ -67,6 +68,8 @@ const Home = () => {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q')?.toLowerCase() || '';
   const navigate = useNavigate();
+
+  useDocumentTitle(query && query !== 'all' ? `${query.charAt(0).toUpperCase() + query.slice(1)}` : '');
 
   const filteredVideos = videos.filter((v: any) => {
     if (!query || query === 'all') return true;

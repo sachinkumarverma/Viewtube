@@ -121,13 +121,6 @@ const Navbar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     return () => window.removeEventListener('storage', updateUser);
   }, []);
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetchNotifications();
-    }
-  }, [isLoggedIn]);
-
   const fetchNotifications = async () => {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -138,6 +131,13 @@ const Navbar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
       setNotifications(res.data);
     } catch (err) { console.error(err); }
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetchNotifications();
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (theme === 'light') {
@@ -281,7 +281,7 @@ const Navbar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     };
 
     recognition.start();
-  }, [isListening, language, navigate, stopListening]);
+  }, [isListening, language, navigate, stopListening, showToast]);
 
   const closeVoiceModal = useCallback(() => {
     stopListening();

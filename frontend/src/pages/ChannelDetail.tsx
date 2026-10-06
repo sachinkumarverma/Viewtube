@@ -10,6 +10,7 @@ import Skeleton from '../components/Skeleton';
 import VideoSkeleton from '../components/VideoSkeleton';
 import AIThumbnailGenerator from '../components/AIThumbnailGenerator';
 import { useToast } from '../components/Toast';
+import { useDocumentTitle } from '../utils/useDocumentTitle';
 
 interface ChannelData {
     user: {
@@ -37,6 +38,7 @@ export default function ChannelDetail() {
 
     const { id } = useParams<{ id: string }>();
     const [data, setData] = useState<ChannelData | null>(null);
+    useDocumentTitle(data?.user?.username || 'Channel');
     const [loading, setLoading] = useState(true);
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [activeTab, setActiveTab] = useState<'videos' | 'about'>('videos');

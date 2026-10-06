@@ -10,6 +10,7 @@ import { useTranslation } from '../i18n';
 import VideoPlayerSkeleton from '../components/VideoPlayerSkeleton';
 import AISummaryPanel from '../components/AISummaryPanel';
 import { useToast } from '../components/Toast';
+import { useDocumentTitle } from '../utils/useDocumentTitle';
 
 interface Comment {
     id: string;
@@ -35,6 +36,7 @@ interface Video {
 export default function VideoPlayer() {
     const { id } = useParams<{ id: string }>();
     const [video, setVideo] = useState<Video | null>(null);
+    useDocumentTitle(video?.title || 'Video');
     const [loading, setLoading] = useState(true);
     const [commentText, setCommentText] = useState('');
     const [isLiked, setIsLiked] = useState(false);

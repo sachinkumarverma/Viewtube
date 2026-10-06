@@ -16,6 +16,8 @@
     "build": "npm --prefix frontend run build && npm --prefix admin run build",
     "build:frontend": "npm --prefix frontend run build",
     "build:admin": "npm --prefix admin run build",
+    "lint": "npm --prefix frontend run lint && npm --prefix admin run lint",
+    "lint:fix": "npm --prefix frontend run lint:fix && npm --prefix admin run lint:fix",
     "start:backend": "npm --prefix backend start"
   },
   "devDependencies": {

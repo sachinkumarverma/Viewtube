@@ -3,16 +3,20 @@ import type { FormEvent } from 'react';
 import axios from 'axios';
 import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { API_BASE_URL } from '../constants';
-import { Mail, ArrowLeft, KeyRound, Lock } from 'lucide-react';
+import { Mail, ArrowLeft, KeyRound, Lock, Eye, EyeOff } from 'lucide-react';
+import { useDocumentTitle } from '../utils/useDocumentTitle';
 
 type Step = 'email' | 'otp' | 'reset';
 
 const ForgotPassword = () => {
+    useDocumentTitle('Forgot Password');
     const [step, setStep] = useState<Step>('email');
     const [email, setEmail] = useState('');
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
@@ -20,15 +24,15 @@ const ForgotPassword = () => {
     const navigate = useNavigate();
     const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-    const token = localStorage.getItem('token');
-    if (token) return <Navigate to="/" replace />;
-
     useEffect(() => {
         if (resendTimer > 0) {
             const t = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
             return () => clearTimeout(t);
         }
     }, [resendTimer]);
+
+    const token = localStorage.getItem('token');
+    if (token) return <Navigate to="/" replace />;
 
     const handleSendOtp = async (e: FormEvent) => {
         e.preventDefault();
@@ -198,13 +202,67 @@ const ForgotPassword = () => {
 
                 {step === 'reset' && (
                     <form onSubmit={handleResetPassword} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                        <div style={{ position: 'relative' }}>
-                            <Lock size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-                            <input type="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder="New password" minLength={6} style={{ ...inputStyle, padding: '0.6rem 0.8rem 0.6rem 38px', borderRadius: '6px', fontSize: '14px' }} />
+                        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                            <Lock size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', pointerEvents: 'none' }} />
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
+                                required
+                                placeholder="New password"
+                                minLength={6}
+                                style={{ ...inputStyle, padding: '0.6rem 2.4rem 0.6rem 38px', borderRadius: '6px', fontSize: '14px', width: '100%', boxSizing: 'border-box' }}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                style={{
+                                    position: 'absolute',
+                                    right: '10px',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    padding: 0,
+                                    cursor: 'pointer',
+                                    color: 'var(--text-secondary, #888)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </button>
                         </div>
-                        <div style={{ position: 'relative' }}>
-                            <KeyRound size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-                            <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required placeholder="Confirm new password" minLength={6} style={{ ...inputStyle, padding: '0.6rem 0.8rem 0.6rem 38px', borderRadius: '6px', fontSize: '14px' }} />
+                        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                            <KeyRound size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', pointerEvents: 'none' }} />
+                            <input
+                                type={showConfirmPassword ? 'text' : 'password'}
+                                value={confirmPassword}
+                                onChange={e => setConfirmPassword(e.target.value)}
+                                required
+                                placeholder="Confirm new password"
+                                minLength={6}
+                                style={{ ...inputStyle, padding: '0.6rem 2.4rem 0.6rem 38px', borderRadius: '6px', fontSize: '14px', width: '100%', boxSizing: 'border-box' }}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                                style={{
+                                    position: 'absolute',
+                                    right: '10px',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    padding: 0,
+                                    cursor: 'pointer',
+                                    color: 'var(--text-secondary, #888)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </button>
                         </div>
                         <button type="submit" disabled={loading} style={{ padding: '0.65rem', background: loading ? '#555' : '#ff0000', color: 'white', border: 'none', borderRadius: '6px', cursor: loading ? 'not-allowed' : 'pointer', fontWeight: 'bold', fontSize: '14px', marginTop: '0.3rem' }}>
                             {loading ? 'Resetting...' : 'Reset Password'}

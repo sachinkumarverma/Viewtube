@@ -8,10 +8,12 @@ import { Upload as UploadIcon, Image, X, CheckCircle2 } from 'lucide-react';
 import { formatDuration } from '../utils/format';
 import AIThumbnailGenerator from '../components/AIThumbnailGenerator';
 import { useTranslation } from '../i18n';
+import { useDocumentTitle } from '../utils/useDocumentTitle';
 
 type UploadStep = 'select' | 'details' | 'uploading' | 'done';
 
 const Upload = () => {
+    useDocumentTitle('Upload');
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
     useEffect(() => {
@@ -38,11 +40,6 @@ const Upload = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const dragRef = useRef<HTMLDivElement>(null);
     const [isDragOver, setIsDragOver] = useState(false);
-
-    const token = localStorage.getItem('token');
-    if (!token) {
-        return <Navigate to="/login" replace />;
-    }
 
     const processVideoFile = useCallback((file: File) => {
         setVideoFile(file);
@@ -162,6 +159,11 @@ const Upload = () => {
             setUploading(false);
         }
     };
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        return <Navigate to="/login" replace />;
+    }
 
     // ─── Step 1: Select Video (YouTube-style) ─────────────
     if (step === 'select') {

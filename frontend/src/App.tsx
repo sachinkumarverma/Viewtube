@@ -15,6 +15,7 @@ import Analytics from './pages/Analytics';
 import './index.css';
 import { ToastProvider } from './components/Toast';
 import OfflineBanner from './components/OfflineBanner';
+import { setDocumentTitle } from './utils/useDocumentTitle';
 
 function MainLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
@@ -22,6 +23,46 @@ function MainLayout() {
   const userStr = localStorage.getItem('user');
   const user = userStr ? JSON.parse(userStr) : null;
   const isAuthRoute = ['/login', '/register', '/forgot-password'].includes(location.pathname);
+
+  // Sync document title on route and search changes
+  useEffect(() => {
+    const path = location.pathname;
+    const searchParams = new URLSearchParams(location.search);
+    const query = searchParams.get('q');
+
+    if (path === '/') {
+      if (query && query.toLowerCase() !== 'all') {
+        const formattedQuery = query.charAt(0).toUpperCase() + query.slice(1);
+        setDocumentTitle(formattedQuery);
+      } else {
+        setDocumentTitle('');
+      }
+    } else if (path === '/explore') {
+      setDocumentTitle('Explore');
+    } else if (path === '/trending') {
+      setDocumentTitle('Trending');
+    } else if (path === '/gaming') {
+      setDocumentTitle('Gaming');
+    } else if (path === '/subscriptions') {
+      setDocumentTitle('Subscriptions');
+    } else if (path === '/history') {
+      setDocumentTitle('History');
+    } else if (path === '/watch-later') {
+      setDocumentTitle('Watch Later');
+    } else if (path === '/liked') {
+      setDocumentTitle('Liked Videos');
+    } else if (path === '/upload') {
+      setDocumentTitle('Upload');
+    } else if (path === '/analytics') {
+      setDocumentTitle('Analytics');
+    } else if (path === '/login') {
+      setDocumentTitle('Login');
+    } else if (path === '/register') {
+      setDocumentTitle('Register');
+    } else if (path === '/forgot-password') {
+      setDocumentTitle('Forgot Password');
+    }
+  }, [location.pathname, location.search]);
 
   // Lock body scroll on mobile/tablet when sidebar is open
   useEffect(() => {

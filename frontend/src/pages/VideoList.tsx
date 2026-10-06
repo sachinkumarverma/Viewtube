@@ -4,8 +4,10 @@ import { API_BASE_URL } from '../constants';
 import { useTranslation } from '../i18n';
 import VideoSkeleton from '../components/VideoSkeleton';
 import VideoCard from '../components/VideoCard';
+import { useDocumentTitle } from '../utils/useDocumentTitle';
 
 export default function VideoList({ endpoint, title }: { endpoint: string, title: string }) {
+    useDocumentTitle(title);
     const [videos, setVideos] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const { t, language } = useTranslation();
@@ -24,7 +26,7 @@ export default function VideoList({ endpoint, title }: { endpoint: string, title
                 const res = await axios.get(`${API_BASE_URL}/${endpoint}`, {
                     headers: token ? { Authorization: `Bearer ${token}` } : {}
                 });
-                let data = res.data;
+                const data = res.data;
                 if (title === 'History' || title === 'Liked Videos') {
                     // Force latest-to-oldest sorting
                     data.sort((a: any, b: any) => new Date(b.viewed_at || b.created_at).getTime() - new Date(a.viewed_at || a.created_at).getTime());
